@@ -1,8 +1,8 @@
-from source.addressbook.fields.address import Address
-from source.addressbook.fields.birthday import Birthday
-from source.addressbook.fields.email import Email
-from source.addressbook.fields.name import Name
-from source.addressbook.fields.phone import Phone
+from addressbook.fields import Address
+from addressbook.fields import Birthday
+from addressbook.fields import Email
+from addressbook.fields import Name
+from addressbook.fields import Phone
 
 from typing import Optional, List, Union
 

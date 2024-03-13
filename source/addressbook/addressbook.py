@@ -1,4 +1,4 @@
-from source.addressbook.records.record import Record
+from addressbook.records import Record
 
 
 class AddressBook:

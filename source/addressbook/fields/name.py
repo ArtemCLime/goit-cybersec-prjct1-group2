@@ -1,4 +1,4 @@
-from source.addressbook.fields.field import Field
+from addressbook.fields.field import Field
 
 class Name(Field):
     """

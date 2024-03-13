@@ -42,18 +42,31 @@ class Record:
     # CRUD operations, Create, Read, Update, Delete.
     # TODO Implement the CRUD operations.
 
-    def add(self, field_name: str, value: str):
-        """ Add a field to the record. """
-        pass
+    def add_birthday(self, birthday):
+        self.birthday = Birthday(birthday)
 
-    def read(self, field_name: str):
-        """ Read a field from the record. """
-        pass
+    def add_phone(self, phone):
+        self.phones.append(Phone(phone))
 
-    def update(self, field_name: str, value: str):
-        """ Update a field in the record. """
-        pass
+    def delete_phone(self, phone):
+        for p in self.phones:
+            if p.value == phone:
+                self.phones.remove(p)
 
-    def delete(self, field_name: str):
-        """ Delete a field from the record. """
-        pass
+    def edit_phone(self, old_phone, new_phone):
+        for p in self.phones:
+            if p.value == old_phone:
+                p.value = new_phone
+
+    def find_phone(self, phone):
+        for p in self.phones:
+            if p.value == phone:
+                return p
+        return None
+
+    def __str__(self):
+        phone_str = '; '.join(str(p) for p in self.phones)
+        if self.birthday:
+            return f"Contact name: {self.name.value}, phones: {phone_str}, birthday: {self.birthday}"
+        else:
+            return f"Contact name: {self.name.value}, phones: {phone_str}"

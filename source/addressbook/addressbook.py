@@ -1,44 +1,39 @@
 from addressbook.records import Record
+from collections import UserDict
+import datetime  
 
+class AddressBook(UserDict):
+    def add_record(self, name, *phones, birthday=None):
+        record = Record(name, birthday)
+        for phone in phones:
+            record.add_phone(phone)
+        self.data[name] = record
 
-class AddressBook:
-    """
-        Class for AddressBook in the address book.
-
-        Attributes:
-            records: List[Record], The list of records in the address book.
-
-    """
-    def __init__(self):
-        self.records = []
+    def get_birthdays_per_week(self):
+        today = datetime.date.today()
+        next_week = today + datetime.timedelta(days=7)
+        birthdays = []
+        for record in self.data.values():
+            if record.birthday:
+                b_day, b_month = record.birthday.value.split('.')[:2]
+                if int(b_day) >= today.day and int(b_month) == today.month:
+                    birthdays.append(record)
+                elif int(b_day) < today.day and int(b_month) == next_week.month:
+                    birthdays.append(record)
+        return birthdays
 
     def __str__(self):
-        return f'{self.records}'
+        if self.data:
+            return "\n".join(str(record) for record in self.data.values())
+        else:
+            return "No contacts found."
+        
+    def __init__(self):
+        self.records = []
 
     def to_json(self):
         """ Return a JSON representation of the address book. """
         pass
 
-    # CRUD operations, Create, Read, Update, Delete.
-
-    def add(self, record: Record):
-        """ Add a record to the address book. """
-        pass
-        # TODO: Implement the add method.
-
-    def read(self, name: str):
-        """ Read a record from the address book. """
-        pass
-        # TODO: Implement the read method.
-    
-    def update(self, name: str, record: Record):
-        """ Update a record in the address book. """
-        pass
-        # TODO: Implement the update method.
-    
-    def delete(self, name: str):
-        """ Delete a record from the address book. """
-        pass
-        # TODO: Implement the delete method.
 
     

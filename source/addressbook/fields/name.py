@@ -14,6 +14,8 @@ class Name(Field):
     
     """ 
     def __init__(self, value, required=True):
+        if not self.validate(value):
+            raise ValueError(f"Invalid name format {value}.")
         super().__init__(value, required)
 
     def validate(self, value: str) -> bool:
@@ -21,5 +23,5 @@ class Name(Field):
         if not isinstance(value, str):
             return False
         if self.required and not value:
-            return False
+            return False        
         return True

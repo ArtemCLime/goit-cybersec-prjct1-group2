@@ -2,6 +2,7 @@ from addressbook.records import Record
 import json
 from collections import UserDict
 from typing import Union
+from search.search import search
 
 
 class AddressBook:
@@ -56,5 +57,17 @@ class AddressBook:
         with open(filename, 'r') as file:
             data = json.load(file)
             self.from_json(data)
+
+    def search_by_name(self, name: str):
+        """ Search for a name in the address book. """
+        return search(name, [record.name.value for record in self.data.values()], top_n=3)
+    
+    def search_by_phone(self, phone: str):
+        """ Search for a phone in the address book. """
+        return search(phone, [phone.value for record in self.data.values() for phone in record.phones], top_n=3)
+    
+    def search_by_email(self, email: str):
+        """ Search for an email in the address book. """
+        return search(email, [email.value for record in self.data.values() for email in record.emails], top_n=3)
 
     

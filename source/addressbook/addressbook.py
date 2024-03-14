@@ -13,11 +13,11 @@ class AddressBook:
 
     """
     def __str__(self):
-        return f'{self.records}'
+        return f'{self.data}'
 
     def to_json(self):
         """ Return a JSON representation of the address book. """
-        return {key: value.to_json() for key, value in self.records.items()}
+        return {key: value.to_json() for key, value in self.data.items()}
     
     def from_json(self, data: Union[str, dict]):
         """ Load the address book from a JSON representation. """

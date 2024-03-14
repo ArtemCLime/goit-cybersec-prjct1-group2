@@ -1,4 +1,7 @@
 from addressbook.records import Record
+import json
+from collections import UserDict
+from typing import Union
 
 
 class AddressBook:
@@ -6,18 +9,19 @@ class AddressBook:
         Class for AddressBook in the address book.
 
         Attributes:
-            records: List[Record], The list of records in the address book.
+            self.data: Dict[str, Record] : The data of the address book
 
     """
-    def __init__(self):
-        self.records = []
-
     def __str__(self):
-        return f'{self.records}'
+        return f'{self.data}'
 
     def to_json(self):
         """ Return a JSON representation of the address book. """
-        pass
+        return {key: value.to_json() for key, value in self.data.items()}
+    
+    def from_json(self, data: Union[str, dict]):
+        """ Load the address book from a JSON representation. """
+        self.data = {name: Record.from_json(record) for name, record in data.items()}
 
     # CRUD operations, Create, Read, Update, Delete.
 
@@ -40,5 +44,17 @@ class AddressBook:
         """ Delete a record from the address book. """
         pass
         # TODO: Implement the delete method.
+    
+
+    def save_to_file(self, filename: str):
+        """ Save the address book to a file. """
+        with open(filename, 'w') as file:
+            json.dump(self.to_json(), file)
+
+    def load_from_file(self, filename: str):
+        """ Load the address book from a file. """
+        with open(filename, 'r') as file:
+            data = json.load(file)
+            self.from_json(data)
 
     

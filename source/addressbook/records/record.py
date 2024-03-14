@@ -75,12 +75,18 @@ class Record:
             "birthday": str(self.birthday)
         }
     
-    def from_json(self, json: Union[str, dict]):
+    @classmethod
+    def from_json(cls, json: Union[str, dict]):
         """ Create the record from a JSONable dictionary. """
-        self.phones = [ Phone(phone) for phone in json["phones"] ] if json["phones"] else []
-        self.emails = [ Email(email) for email in json["emails"] ] if json["emails"] else [] 
-        self.address = Address(json["address"]) if json["address"] else None
-        self.birthday = Birthday(json["birthday"]) if json["birthday"] else None 
+        if isinstance(json, str):
+            json = json.loads(json)
+        return cls(
+            json["name"],
+            json.get("phones"),
+            json.get("emails"),
+            json.get("address"),
+            json.get("birthday")
+        )
     
     # CRUD operations, Create, Read, Update, Delete.
     # TODO Implement the CRUD operations.
@@ -174,8 +180,7 @@ class Record:
 
 if __name__ == "__main__":
     """ Simple testcases """
-    record = Record('test')
-    record.from_json(
+    record = Record.from_json(
         {
             "phones": ['1234567890', '0987654321'],
             "emails": ['test_1@goit.com', 'test2@goit.com'],

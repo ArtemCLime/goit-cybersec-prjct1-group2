@@ -12,8 +12,12 @@ class Phone(Field):
         validate: Validate the value of the phone field.
     
     """ 
+    def __init__(self, value):
+        if not self.validate(value):
+            raise ValueError(f"Invalid phone format {value}. Please provide phone as 10 digits number")
+        super().__init__(value) 
+
     def validate(self, value: str) -> bool:
-        # Validate is the phone number is in the correct format.
-        pass
-        
-        # TODO: Implement the validation of the phone field.
+        if not value.isdigit() or len(value) != 10:
+             return False                
+        return True

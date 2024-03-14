@@ -1,5 +1,5 @@
 from addressbook.fields.field import Field
-
+from datetime import datetime
 
 class Birthday(Field):
     """
@@ -10,11 +10,20 @@ class Birthday(Field):
         value: The value of the birthday field.
 
         Methods:
-        validate: Validate the value of the birthday field.
-    
+        validate: Validate the value of the birthday field.    
+
     """ 
+    def __init__(self, value):
+        if not self.validate(value):
+            raise ValueError(f"Invalid birthday format {value}. Please provide birthday in dd.mm.yyyy format")
+        super().__init__(value) 
+
     def validate(self, value: str) -> bool:
         # Validate if the birthday is in the correct format.
-        pass
-        
-        # TODO: Implement the validation of the birthday field.
+        if not isinstance(value, str):
+            return False
+        try:
+            datetime.strptime(value, '%d/%m/%Y')
+        except ValueError:
+            return False        
+        return True

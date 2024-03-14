@@ -14,12 +14,14 @@ class Name(Field):
     
     """ 
     def __init__(self, value, required=True):
+        if not self.validate(value, required):
+            raise ValueError(f"Invalid name format {value}.")
         super().__init__(value, required)
 
-    def validate(self, value: str) -> bool:
+    def validate(self, value: str, required: bool) -> bool:
         # Validate if the name is not None, or bad type.
         if not isinstance(value, str):
             return False
-        if self.required and not value:
-            return False
+        if required and not value:
+            return False        
         return True

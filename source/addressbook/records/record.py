@@ -180,8 +180,7 @@ class Record:
 
 if __name__ == "__main__":
     """ Simple testcases """
-    record = Record('test')
-    record.from_json(
+    record = Record.from_json(
         {
             "phones": ['1234567890', '0987654321'],
             "emails": ['test_1@goit.com', 'test2@goit.com'],

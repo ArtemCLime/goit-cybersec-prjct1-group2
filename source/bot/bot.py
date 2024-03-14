@@ -16,13 +16,13 @@ class Bot:
 
         return inner
 
-    def parse_input(user_input):
+    def parse_input(self, user_input):
         cmd, *args = user_input.split()
         cmd = cmd.strip().lower()
         return cmd, *args
 
     @input_error    
-    def add_contact(args, book):
+    def add_contact(self, args, book):
         if len(args) >= 2:
             name = args[0]
             # Combine the remaining elements in args to form the phone number
@@ -34,11 +34,11 @@ class Bot:
         else:
             return "Invalid command. Please provide both name and phone number."
 
-    def hello():
+    def hello(self):
         return "How can I help you?"
 
     @input_error
-    def update_contact(book, name, new_phone):
+    def update_contact(self, book, name, new_phone):
         record = book.read(name)
         if record:
             record.update("phone", new_phone)
@@ -47,19 +47,19 @@ class Bot:
             return "Contact not found."
 
     @input_error
-    def show_phone(book, name):
+    def show_phone(self, book, name):
         record = book.read(name)
         return record.phones[0].value if record else "Contact not found."
 
     @input_error
-    def show_all_contacts(book):
+    def show_all_contacts(self, book):
         if book.data:
             return "\n".join([str(record) for record in book.data.values()])
         else:
             return "No contacts available."
         
     @input_error
-    def add_birthday(book, name, birthday):
+    def add_birthday(self, book, name, birthday):
         record = book.read(name)
         if record:
             record.add("birthday", birthday)
@@ -68,12 +68,12 @@ class Bot:
             return "Contact not found."
         
     @input_error
-    def show_birthday(book, name):
+    def show_birthday(self, book, name):
         record = book.read(name)
         return record.show_birthday() if record else "Contact not found."
 
 #    @input_error
-#    def print_birthdays_per_week(book):
+#    def print_birthdays_per_week(self, book):
 #        users = [{"name": name, "birthday": record.show_birthday()} for name, record in book.data.items()]
 #        return get_birthdays_per_week(users)
 

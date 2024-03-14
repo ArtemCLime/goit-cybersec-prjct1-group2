@@ -1,7 +1,7 @@
 from addressbook.records import Record
+from collections import UserDict
 
-
-class AddressBook:
+class AddressBook(UserDict):
     """
         Class for AddressBook in the address book.
 
@@ -9,11 +9,10 @@ class AddressBook:
             records: List[Record], The list of records in the address book.
 
     """
-    def __init__(self):
-        self.records = []
+
 
     def __str__(self):
-        return f'{self.records}'
+        return f'{self.data}'
 
     def to_json(self):
         """ Return a JSON representation of the address book. """
@@ -21,24 +20,23 @@ class AddressBook:
 
     # CRUD operations, Create, Read, Update, Delete.
 
-    def add(self, record: Record):
+    def add(self, name: str, record: Record):
         """ Add a record to the address book. """
         pass
         # TODO: Implement the add method.
 
     def read(self, name: str):
-        """ Read a record from the address book. """
+        """ Read a record from the address book."""
         pass
         # TODO: Implement the read method.
-    
-    def update(self, name: str, record: Record):
+
+    def change(self, name: str):
         """ Update a record in the address book. """
         pass
         # TODO: Implement the update method.
-    
+
     def delete(self, name: str):
         """ Delete a record from the address book. """
         pass
         # TODO: Implement the delete method.
 
-    

@@ -10,7 +10,7 @@ from addressbook.fields import Birthday
 from addressbook.fields import Email
 from addressbook.fields import Name
 from addressbook.fields import Phone
-
+from bot.bot_errors import *
 from typing import Optional, List, Union
 
 class Record:
@@ -91,10 +91,11 @@ class Record:
     # CRUD operations, Create, Read, Update, Delete.
     # TODO Implement the CRUD operations.
 
+    @error_handler
     def add(self, field_name: str, value: str):
         """ Add a field to the record. """
         if not self.__validate_params(field_name) or not self.__validate_params(value):
-            return "Field_name or value is empty."
+            raise BotRecordEmptyParamsException
         if field_name == 'phone':
             """ Add phone to a record list """
             self.phones.append(Phone(value))
@@ -108,13 +109,13 @@ class Record:
             """ Add birthday date to the record """
             self.birthday = Birthday(value)
         else:
-            # TODO: return should be changed to raise
-            return 'Unrecognize field name.'
+            raise BotRecordUnrecognizeFieldException
 
+    @error_handler
     def read(self, field_name: str):
         """ Read a field from the record. """
         if not self.__validate_params(field_name):
-            return "Field_name is empty"
+            raise BotRecordEmptyParamsException
         if field_name == 'phone':
             """ Return a list of record phones """
             return [ p.value for p in self.phones ]
@@ -128,9 +129,9 @@ class Record:
             """ Return birthday string """
             return self.birthday.value
         else:
-            # TODO: return should be changed to raise
-            return 'Unrecognize field name.'
+            raise BotRecordUnrecognizeFieldException
 
+    @error_handler
     def update(self, field_name: str, old_value: str, new_value: str):
         """ Update a field in the record. """
         if field_name == 'phone' and self.__validate_params(old_value) and self.__validate_params(new_value):
@@ -146,15 +147,15 @@ class Record:
                     self.emails.remove(e)
                     self.emails.append(Email(new_value))
         elif field_name == 'address' and self.__validate_params(new_value):
-            """ Update phone in a record """
+            """ Update address in a record """
             self.address = Address(new_value)
         elif field_name == 'birthday' and self.__validate_params(new_value):
-            """ Update phone in a record """
+            """ Update birthday in a record """
             self.birthday = Birthday(new_value)
         else:
-            # TODO: return should be changed to raise
-            return 'Unrecognize field name.'
+            raise BotRecordUnrecognizeFieldException
 
+    @error_handler
     def delete(self, field_name: str, value: str = None):
         """ Delete a field from the record. """
         if field_name == 'phone' and self.__validate_params(value):
@@ -168,14 +169,13 @@ class Record:
                 if e.value == value:
                     self.emails.remove(e)
         elif field_name == 'address':
-            """ Delete phone from a record """
+            """ Delete address from a record """
             self.address = None
         elif field_name == 'birthday':
-            """ Delete phone from a record """
+            """ Delete birthday from a record """
             self.birthday = None
         else:
-            # TODO: return should be changed to raise
-            return 'Unrecognize field name.'
+            raise BotRecordUnrecognizeFieldException
 
 
 if __name__ == "__main__":

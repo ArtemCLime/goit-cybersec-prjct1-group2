@@ -1,76 +1,84 @@
 from addressbook import AddressBook
 from addressbook.records import Record
+from bot.bot_errors import *
 
 class Bot:
-    def __init__(self) -> None:
-        self.book = AddressBook()        
-
-    def input_error(func):
-        def inner(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except (ValueError, KeyError, IndexError):
-                return "Invalid input. Check your data."
-            except Exception as e:
-                return f"An error occurred: {str(e)}"
-
-        return inner
+    def __init__(self, book_file_path) -> None:
+        self.book = AddressBook()
+        self.book_file_path = book_file_path 
 
     def parse_input(self, user_input):
         cmd, *args = user_input.split()
         cmd = cmd.strip().lower()
         return cmd, *args
 
-    @input_error    
-    def add_contact(self, args, book):
+    def __load_book(self):
+        pass
+
+    def __save_book(self):
+        pass
+
+    @error_handler    
+    def add_contact(self, args):
         if len(args) >= 2:
             name = args[0]
             # Combine the remaining elements in args to form the phone number
             phone = ' '.join(args[1:])
             record = Record(name)
-            record.add("phone", phone)
-            book.add(record)
+            res = record.add("phone", phone)
+            if res:
+                return res
+            self.book.add(record)
             return "Contact added."
         else:
-            return "Invalid command. Please provide both name and phone number."
+            raise BotContactAddException
 
     def hello(self):
         return "How can I help you?"
 
-    @input_error
-    def update_contact(self, book, name, new_phone):
-        record = book.read(name)
+    @error_handler
+    def update_contact(self, name, old_phone, new_phone):
+        record = self.book.read(name)
         if record:
-            record.update("phone", new_phone)
-            return "Contact updated."
+            res = record.update("phone", old_phone, new_phone)
+            return "Contact updated." if not res else res
         else:
-            return "Contact not found."
+            raise BotContactNotExistsException
 
-    @input_error
-    def show_phone(self, book, name):
-        record = book.read(name)
-        return record.phones[0].value if record else "Contact not found."
-
-    @input_error
-    def show_all_contacts(self, book):
-        if book.data:
-            return "\n".join([str(record) for record in book.data.values()])
+    @error_handler
+    def show_phone(self, name):
+        record = self.book.read(name)
+        if record:
+            return record.read('phone')
         else:
-            return "No contacts available."
-        
-    @input_error
+            raise BotContactNotExistsException
+
+    @error_handler
+    def show_all_contacts(self):
+        if self.book.data:
+            return "\n".join([str(record) for record in self.book.data.values()])
+        else:
+            raise BotContactsNotAvailableException
+
     def add_birthday(self, book, name, birthday):
         record = book.read(name)
         if record:
-            record.add("birthday", birthday)
-            return "Birthday added."
+            res = record.add("birthday", birthday)
+            return "Birthday added." if not res else res
         else:
-            return "Contact not found."
+            raise BotContactNotExistsException
         
-    @input_error
-    def show_birthday(self, book, name):
-        record = book.read(name)
-        return record.show_birthday() if record else "Contact not found."
+    @error_handler
+    def show_birthday(self, name):
+        record = self.book.read(name)
+        if record:
+            return record.read("birthday")
+        else:
+            raise BotContactNotExistsException
+
+    @error_handler
+    def book_save(self):
+        self.__save_book()
 
 #    @input_error
 #    def print_birthdays_per_week(self, book):
@@ -102,6 +110,8 @@ class Bot:
                 print(self.show_birthday(self.book, args[0]))
             ##elif command == "birthdays" and not args:
             ##    results = print_birthdays_per_week(book)
+            elif command == "save" and not args:
+                print(self.book_save)
             else:
                 print("Invalid command.")
             pass

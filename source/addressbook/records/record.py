@@ -45,6 +45,7 @@ class Record:
                  phones: Optional[List[str]] = None, 
                  address: Optional[str] = None, 
                  birthday: Optional[str] = None):
+        
         self.name = Name(name)
         self.phones = [ Phone(phone) for phone in phones ] if phones else []
         self.emails = [ Email(email) for email in emails ] if emails else []
@@ -52,13 +53,14 @@ class Record:
         self.birthday = Birthday(birthday) if birthday else None
 
 
+
     def __str__(self):
         return '{name} | {phones} | {emails} | {address} | {birthday} '.format(
             name = self.name,
             phones = "; ".join([ p.value for p in self.phones ]),
             emails = "; ".join([ e.value for e in self.emails ]),
-            address = self.address.value,
-            birthday = self.birthday.value 
+            address = self.address.value if self.address else None,
+            birthday = self.birthday.value if self.birthday else None
         )
     
     def __validate_params(self, param):
@@ -69,6 +71,7 @@ class Record:
     def to_json(self):
         """ Return a JSONable dictionary of the record. """
         return {
+            "name": str(self.name),
             "phones": [str(p) for p in self.phones],
             "emails": [str(e) for e in self.emails],
             "address": str(self.address),
@@ -81,11 +84,11 @@ class Record:
         if isinstance(json, str):
             json = json.loads(json)
         return cls(
-            json["name"],
-            json.get("phones"),
-            json.get("emails"),
-            json.get("address"),
-            json.get("birthday")
+            name=json["name"],
+            phones=json.get("phones"),
+            emails=json.get("emails"),
+            address=json.get("address") if json.get("address") != "None" else None,
+            birthday=json.get("birthday") if json.get("birthday") != "None" else None
         )
     
     # CRUD operations, Create, Read, Update, Delete.

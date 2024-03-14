@@ -5,7 +5,7 @@ from typing import Union
 from search.search import search
 
 
-class AddressBook:
+class AddressBook(UserDict):
     """
         Class for AddressBook in the address book.
 
@@ -28,23 +28,19 @@ class AddressBook:
 
     def add(self, record: Record):
         """ Add a record to the address book. """
-        pass
-        # TODO: Implement the add method.
+        self.data[record.name.value] = record
 
     def read(self, name: str):
         """ Read a record from the address book. """
-        pass
-        # TODO: Implement the read method.
+        return self.data[name]
     
     def update(self, name: str, record: Record):
         """ Update a record in the address book. """
-        pass
-        # TODO: Implement the update method.
+        self.data[name] = record
     
     def delete(self, name: str):
         """ Delete a record from the address book. """
-        pass
-        # TODO: Implement the delete method.
+        del self.data[name]
     
 
     def save_to_file(self, filename: str):

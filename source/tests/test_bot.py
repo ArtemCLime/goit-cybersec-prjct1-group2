@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 from bot import Bot
 
+
 class TestBot(unittest.TestCase):
 
     def setUp(self):
@@ -13,7 +14,9 @@ class TestBot(unittest.TestCase):
 
     def test_add_contact_invalid_args(self):
         result = self.bot.add_contact(["John"])
-        self.assertEqual(result, "You need to provide exactly 2 argument(s) to add_contact.")
+        self.assertEqual(
+            result, "You need to provide exactly 2 argument(s) to add_contact."
+        )
 
     def test_add_field(self):
         self.bot.add_contact(["John", "1234567890"])
@@ -23,7 +26,9 @@ class TestBot(unittest.TestCase):
     def test_add_field_invalid_args(self):
         result = self.bot.add_contact(["John", "1234567890"])
         result = self.bot.add_field(["John", "email"])
-        self.assertEqual(result, "You need to provide exactly 3 argument(s) to add_field.")
+        self.assertEqual(
+            result, "You need to provide exactly 3 argument(s) to add_field."
+        )
 
     def test_update_contact(self):
         self.bot.add_contact(["John", "1234567890"])
@@ -32,7 +37,9 @@ class TestBot(unittest.TestCase):
 
     def test_update_contact_invalid_args(self):
         result = self.bot.update_contact(["John", "phone", "1234567890"])
-        self.assertEqual(result, "You need to provide exactly 4 argument(s) to update_contact.")
+        self.assertEqual(
+            result, "You need to provide exactly 4 argument(s) to update_contact."
+        )
 
     def test_show_phone(self):
         self.bot.add_contact(["John", "1234567890"])
@@ -41,7 +48,9 @@ class TestBot(unittest.TestCase):
 
     def test_show_all_contacts(self):
         self.bot.add_contact(["John", "1234567890"])
-        self.assertEqual(self.bot.show_all_contacts(), "John | 1234567890 |  | None | None ")
+        self.assertEqual(
+            self.bot.show_all_contacts(), "John | 1234567890 |  | None | None "
+        )
 
     def test_add_birthday(self):
         self.bot.add_contact(["John", "1234567890"])
@@ -51,7 +60,9 @@ class TestBot(unittest.TestCase):
     def test_add_birthday_invalid_args(self):
         self.bot.add_contact(["John", "1234567890"])
         result = self.bot.add_birthday(["John"])
-        self.assertEqual(result, "You need to provide exactly 2 argument(s) to add_birthday.")
+        self.assertEqual(
+            result, "You need to provide exactly 2 argument(s) to add_birthday."
+        )
 
     def test_show_birthday(self):
         self.bot.add_contact(["John", "1234567890"])
@@ -67,7 +78,9 @@ class TestBot(unittest.TestCase):
 
     def test_search_by_field_invalid_args(self):
         result = self.bot.search_by_field(["email"])
-        self.assertEqual(result, "You need to provide exactly 2 argument(s) to search_by_field.")
+        self.assertEqual(
+            result, "You need to provide exactly 2 argument(s) to search_by_field."
+        )
 
     def test_book_save(self):
         result = self.bot.book_save()
@@ -84,7 +97,9 @@ class TestBot(unittest.TestCase):
 
     def test_add_note_invalid_args(self):
         result = self.bot.add_note([])
-        self.assertEqual(result, "You need to provide exactly 1 argument(s) to add_note.")
+        self.assertEqual(
+            result, "You need to provide exactly 1 argument(s) to add_note."
+        )
 
     def test_edit_note(self):
         with patch("builtins.input", return_value="This is a note."):
@@ -95,7 +110,9 @@ class TestBot(unittest.TestCase):
 
     def test_edit_note_invalid_args(self):
         result = self.bot.edit_note([])
-        self.assertEqual(result, "You need to provide exactly 1 argument(s) to edit_note.")
+        self.assertEqual(
+            result, "You need to provide exactly 1 argument(s) to edit_note."
+        )
 
     def test_delete_note(self):
         with patch("builtins.input", return_value="This is a note."):
@@ -105,7 +122,9 @@ class TestBot(unittest.TestCase):
 
     def test_delete_note_invalid_args(self):
         result = self.bot.delete_note([])
-        self.assertEqual(result, "You need to provide exactly 1 argument(s) to delete_note.")
+        self.assertEqual(
+            result, "You need to provide exactly 1 argument(s) to delete_note."
+        )
 
     def test_add_note_tags(self):
         with patch("builtins.input", return_value="This is a note."):
@@ -129,7 +148,9 @@ class TestBot(unittest.TestCase):
 
     def test_show_note_invalid_args(self):
         result = self.bot.show_note([])
-        self.assertEqual(result, "You need to provide exactly 1 argument(s) to show_note.")
+        self.assertEqual(
+            result, "You need to provide exactly 1 argument(s) to show_note."
+        )
 
     def test_wrong_input(self):
         result = self.bot.wrong_input("addd")
@@ -147,6 +168,19 @@ class TestBot(unittest.TestCase):
         result = self.bot.add_note_tags(["Note 1", "important"])
         result = self.bot.search_note(["tags:", "important"])
         self.assertEqual(result[0].note, "This is a note.")
+
+    def test_print_birthdays_per_week(self):
+        self.bot.add_contact(["John", "1234567890"])
+        self.bot.add_contact(["Alice", "1234567890"])
+        self.bot.add_contact(["Bob", "1234567890"])
+        self.bot.add_birthday(["John", "18.03.2000"])
+        self.bot.add_birthday(["Alice", "10.03.1995"])
+        self.bot.add_birthday(["Bob", "19.03.1990"])
+        with patch("builtins.input", side_effect=["18.03.2024"]):
+            result = self.bot.print_birthdays_per_week()
+        expected_result = ["Monday: John\n", "Tuesday: Bob\n"]
+        self.assertEqual(result, expected_result)
+
 
 if __name__ == "__main__":
     unittest.main()

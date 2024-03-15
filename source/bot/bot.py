@@ -39,6 +39,7 @@ class Bot:
             "add-note-tags": self.add_note_tags,
             "remove-note-tags": self.remove_note_tags,
             "show-note": self.show_note,
+            "search": self.search_by_field
         }
 
         self.__load_book()
@@ -175,6 +176,16 @@ class Bot:
             return record.read("birthday")
         else:
             raise BotContactNotExistsException
+        
+    @error_handler
+    @require_args(2)
+    def search_by_field(self, args):
+        field_type, field_value = args        
+        record = self.book.search_by_field(field_type, field_value)
+        if record:            
+            return str(record)
+        else:
+            raise BotContactNotExistsException        
 
     @error_handler
     def book_save(self):

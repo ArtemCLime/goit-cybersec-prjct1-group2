@@ -2,6 +2,9 @@ from addressbook import AddressBook
 from addressbook.records import Record
 from bot.bot_errors import *
 
+from rich.console import Console
+from rich.markdown import Markdown
+
 class Bot:
     def __init__(self, book_file_path) -> None:
         self.book = AddressBook()
@@ -17,6 +20,7 @@ class Bot:
             "show-birthday": self.show_birthday,
             "save": self.book_save,
             "load": self.load_book,
+            "help": self.show_help
         }
 
     def require_args(n_args):
@@ -28,6 +32,7 @@ class Bot:
             return wrapper
         return decorator
 
+    @error_handler
     def parse_input(self, user_input):
         cmd, *args = user_input.split()
         cmd = cmd.strip().lower()
@@ -124,6 +129,14 @@ class Bot:
     def load_book(self):
         self.__load_book()
         return "Book loaded."
+    
+    def show_help(self):
+        MARKDOWN = """
+# Manual for Bot Assistans
+"""
+        console = Console()
+        md = Markdown(MARKDOWN)
+        console.print(md)
 
 #    @input_error
 #    def print_birthdays_per_week(self, book):

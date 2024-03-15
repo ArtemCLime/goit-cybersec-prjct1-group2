@@ -1,1 +1,1 @@
-from source.notebook.notes.note import Note
+from notebook.notes.note import Note

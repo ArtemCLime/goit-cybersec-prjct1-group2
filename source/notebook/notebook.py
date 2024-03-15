@@ -43,7 +43,9 @@ class NoteBook(AddressBook):
 
     def search_by_tags(self, tags: List[str]):
         """Search for a tag in the note book."""
-        return [note for note in self.data.values() if any(tag in note.tags for tag in tags)]
+        return [
+            note for note in self.data.values() if any(tag in note.tags for tag in tags)
+        ]
 
     def search_by_text(self, query: str):
         """Search for a text query in the note book.

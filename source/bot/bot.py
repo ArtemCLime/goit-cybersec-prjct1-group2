@@ -291,8 +291,10 @@ class Bot:
 
     @error_handler
     def print_birthdays_per_week(self):
-        weekdays_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-        start_date = datetime.strptime(input('Enter date to start from:'), "%d.%m.%Y").date()
+        weekdays_list = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        start_date = datetime.strptime(
+            input("Enter date to start from:"), "%d.%m.%Y"
+        ).date()
         people_to_congratulate = defaultdict(list)
 
         for user, record in self.book.data.items():
@@ -306,8 +308,11 @@ class Bot:
                     weekday = 1 if weekday > 5 else weekday
                     people_to_congratulate[weekday].append(user)
 
-        final_list = [f'{weekdays_list[i - 1]}: {", ".join(people_to_congratulate.get(i))}\n' 
-                      for i in range(1, 6) if people_to_congratulate.get(i)]
+        final_list = [
+            f'{weekdays_list[i - 1]}: {", ".join(people_to_congratulate.get(i))}\n'
+            for i in range(1, 6)
+            if people_to_congratulate.get(i)
+        ]
 
         return final_list
 

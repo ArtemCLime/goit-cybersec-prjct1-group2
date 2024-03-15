@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
 from bot import Bot
+from bot.bot_errors import BotContactNotExistsException
 
 
 class TestBot(unittest.TestCase):
@@ -180,6 +181,25 @@ class TestBot(unittest.TestCase):
             result = self.bot.print_birthdays_per_week()
         expected_result = ["Monday: John\n", "Tuesday: Bob\n"]
         self.assertEqual(result, expected_result)
+
+    def test_delete_field(self):
+        self.bot.add_contact(["John", "1234567890"])
+        self.bot.add_field(["John", "email", "john@example.com"])
+        result = self.bot.delete_field(["John", "email", "john@example.com"])
+        self.assertEqual(result, "Field deleted.")
+
+    def test_delete_field_invalid_args(self):
+        result = self.bot.delete_field(["John", "email"])
+        self.assertEqual(
+            result, "You need to provide exactly 3 argument(s) to delete_field."
+        )
+
+    def test_delete_field_contact_not_exists(self):
+        result = self.bot.delete_field(["John", "email", "john@example.com"])
+        self.assertEqual(
+            result, "  Contact is not present in DB"
+        )
+
 
 
 if __name__ == "__main__":

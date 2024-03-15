@@ -146,6 +146,25 @@ class Bot:
             return "Contact updated." if not res else res
         else:
             raise BotContactNotExistsException
+        
+    @error_handler
+    @require_args(3)
+    def delete_field(self, args):
+        """
+        Delete field from the contact
+        field type
+            - phone
+            - email
+            - birthday
+            - address
+        """
+        name, field_type, value = args
+        record = self.book.read(name)
+        if record:
+            res = record.delete(field_type, value)
+            return "Field deleted." if not res else res
+        else:
+            raise BotContactNotExistsException
 
     @error_handler
     @require_args(1)

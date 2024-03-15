@@ -34,7 +34,7 @@ class AddressBook(UserDict):
 
     def read(self, name: str):
         """Read a record from the address book."""
-        return self.data[name]
+        return self.data.get(name)
 
     def update(self, name: str, record: Record):
         """Update a record in the address book."""

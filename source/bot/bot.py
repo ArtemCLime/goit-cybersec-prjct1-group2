@@ -7,46 +7,80 @@ class Bot:
         self.book = AddressBook()
         self.book_file_path = book_file_path 
 
+        self.COMAND_MAPPING = {
+            "add": self.add_contact,
+            "add-field": self.add_field,
+            "change": self.update_contact,
+            "phone": self.show_phone,
+            "all": self.show_all_contacts,
+            "add-birthday": self.add_birthday,
+            "show-birthday": self.show_birthday,
+            "save": self.book_save,
+            "load": self.load_book,
+        }
+
+    def require_args(n_args):
+        def decorator(func):
+            def wrapper(self, args, *args_passed, **kwargs_passed):
+                if len(args) != n_args:
+                    return f"You need to provide exactly {n_args} argument(s) to {func.__name__}."
+                return func(self, args, *args_passed, **kwargs_passed)
+            return wrapper
+        return decorator
+
     def parse_input(self, user_input):
         cmd, *args = user_input.split()
         cmd = cmd.strip().lower()
         return cmd, *args
 
     def __load_book(self):
-        pass
+        self.book.load_from_file(self.book_file_path)
 
     def __save_book(self):
-        pass
+        self.book.save_to_file(self.book_file_path)
 
-    @error_handler    
+    @error_handler
+    @require_args(2)  
     def add_contact(self, args):
-        if len(args) >= 2:
-            name = args[0]
-            # Combine the remaining elements in args to form the phone number
-            phone = ' '.join(args[1:])
-            record = Record(name)
-            res = record.add("phone", phone)
-            if res:
-                return res
-            self.book.add(record)
-            return "Contact added."
+        name = args[0]
+        # Combine the remaining elements in args to form the phone number
+        phone = ' '.join(args[1:])
+        print(name, phone)
+        record = Record(name)
+        record.add("phone", phone)
+        self.book.add(record)
+        return "Contact added."
+        
+    @error_handler
+    @require_args(3)
+    def add_field(self, args):
+        name, field_type, value = args
+        record = self.book.read(name)
+        if record:
+            res = record.add(field_type, value)
+            return "Field added." if not res else res
         else:
-            raise BotContactAddException
+            raise BotContactNotExistsException
 
     def hello(self):
         return "How can I help you?"
 
     @error_handler
-    def update_contact(self, name, old_phone, new_phone):
+    @require_args(4)
+    def update_contact(self, args):
+        name, field_type, old_value, new_value = args
         record = self.book.read(name)
         if record:
-            res = record.update("phone", old_phone, new_phone)
+            res = record.update(field_type, old_value, new_value)
             return "Contact updated." if not res else res
         else:
             raise BotContactNotExistsException
+    
 
     @error_handler
-    def show_phone(self, name):
+    @require_args(1)
+    def show_phone(self, args):
+        name = args[0]
         record = self.book.read(name)
         if record:
             return record.read('phone')
@@ -60,8 +94,11 @@ class Bot:
         else:
             raise BotContactsNotAvailableException
 
-    def add_birthday(self, book, name, birthday):
-        record = book.read(name)
+    @error_handler
+    @require_args(2)
+    def add_birthday(self, args):
+        name, birthday = args
+        record = self.book.read(name)
         if record:
             res = record.add("birthday", birthday)
             return "Birthday added." if not res else res
@@ -69,7 +106,9 @@ class Bot:
             raise BotContactNotExistsException
         
     @error_handler
-    def show_birthday(self, name):
+    @require_args(1)
+    def show_birthday(self, args):
+        name = args[0]
         record = self.book.read(name)
         if record:
             return record.read("birthday")
@@ -79,6 +118,12 @@ class Bot:
     @error_handler
     def book_save(self):
         self.__save_book()
+        return "Book saved."
+
+    @error_handler
+    def load_book(self):
+        self.__load_book()
+        return "Book loaded."
 
 #    @input_error
 #    def print_birthdays_per_week(self, book):
@@ -90,28 +135,13 @@ class Bot:
         while True:
             user_input = input("Enter a command: ")
             command, *args = self.parse_input(user_input)
-
             if command in ["close", "exit"]:
                 print("Good bye!")
                 break
-            elif command == "hello":
-                print(self.hello())
-            elif command == "add" and len(args) >= 2:
-                print(self.add_contact(args, self.book))
-            elif command == "change" and len(args) == 2:
-                print(self.update_contact(self.book, args[0], args[1]))
-            elif command == "phone" and len(args) == 1:
-                print(self.show_phone(self.book, args[0]))
-            elif command == "all" and not args:
-                print(self.show_all_contacts(self.book))
-            elif command == "add-birthday" and len(args) == 2:
-                print(self.add_birthday(self.book, args[0], args[1]))
-            elif command == "show-birthday" and len(args) == 1:
-                print(self.show_birthday(self.book, args[0]))
-            ##elif command == "birthdays" and not args:
-            ##    results = print_birthdays_per_week(book)
-            elif command == "save" and not args:
-                print(self.book_save)
+            elif command in self.COMAND_MAPPING:
+                if args:
+                    print(self.COMAND_MAPPING[command](args))
+                else:
+                    print(self.COMAND_MAPPING[command]())
             else:
                 print("Invalid command.")
-            pass

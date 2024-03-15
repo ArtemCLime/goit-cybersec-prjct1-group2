@@ -23,7 +23,7 @@ class NoteBook(AddressBook):
 
     def read(self, title: str):
         """Read a note from the address book."""
-        return self.data.get(title)
+        return str(self.data.get(title))
 
     def update(self, title: str, note: Note):
         """Update a note in the address book."""

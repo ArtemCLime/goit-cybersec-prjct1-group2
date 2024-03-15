@@ -148,5 +148,17 @@ class TestBot(unittest.TestCase):
         result = self.bot.search_note(["tags:", "important"])
         self.assertEqual(result[0].note, "This is a note.")
 
+    def test_print_birthdays_per_week(self):
+        self.bot.add_contact(["John", "1234567890"])
+        self.bot.add_contact(["Alice", "1234567890"])
+        self.bot.add_contact(["Bob", "1234567890"])
+        self.bot.add_birthday(["John", "18.03.2000"])
+        self.bot.add_birthday(["Alice", "10.03.1995"])
+        self.bot.add_birthday(["Bob", "19.03.1990"])
+        with patch("builtins.input", side_effect=["18.03.2024"]):
+            result = self.bot.print_birthdays_per_week()
+        expected_result = ['Monday: John\n', 'Tuesday: Bob\n']
+        self.assertEqual(result, expected_result)
+
 if __name__ == "__main__":
     unittest.main()

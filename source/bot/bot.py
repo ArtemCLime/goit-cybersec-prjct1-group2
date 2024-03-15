@@ -294,20 +294,21 @@ class Bot:
         weekdays_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
         start_date = datetime.strptime(input('Enter date to start from:'), "%d.%m.%Y").date()
         people_to_congratulate = defaultdict(list)
-        for user in self.book.data:
-            birthday = datetime.strptime(self.book.data[user].birthday.value, "%d.%m.%Y").date()
-            new_birthday = birthday.replace(year=start_date.year)
-            delta_days = (new_birthday - start_date).days
-            if 7 >= delta_days >= 0:
-                weekday = new_birthday.isoweekday()
-                if weekday == 6 or weekday == 7:
-                    weekday = 1
-                people_to_congratulate[weekday].append(user)
-        final_list = []
-        for i in range(1, 6):
-            if people_to_congratulate.get(i) is not None:
-                names = ", ".join(people_to_congratulate[i])
-                final_list.append(f'{weekdays_list[i - 1]}: {names}\n')
+
+        for user, record in self.book.data.items():
+            if record.birthday:
+                birthday = datetime.strptime(record.birthday.value, "%d.%m.%Y").date()
+                new_birthday = birthday.replace(year=start_date.year)
+                delta_days = (new_birthday - start_date).days
+
+                if 0 <= delta_days <= 7:
+                    weekday = new_birthday.isoweekday()
+                    weekday = 1 if weekday > 5 else weekday
+                    people_to_congratulate[weekday].append(user)
+
+        final_list = [f'{weekdays_list[i - 1]}: {", ".join(people_to_congratulate.get(i))}\n' 
+                      for i in range(1, 6) if people_to_congratulate.get(i)]
+
         return final_list
 
     def idle(self) -> None:

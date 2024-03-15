@@ -1,6 +1,8 @@
 from addressbook import AddressBook
 from addressbook.records import Record
 from bot.bot_errors import *
+from datetime import datetime
+from collections import defaultdict
 
 class Bot:
     def __init__(self, book_file_path) -> None:
@@ -17,6 +19,7 @@ class Bot:
             "show-birthday": self.show_birthday,
             "save": self.book_save,
             "load": self.load_book,
+            "week-birthdays": self.print_birthdays_per_week
         }
 
     def require_args(n_args):
@@ -125,10 +128,30 @@ class Bot:
         self.__load_book()
         return "Book loaded."
 
-#    @input_error
-#    def print_birthdays_per_week(self, book):
-#        users = [{"name": name, "birthday": record.show_birthday()} for name, record in book.data.items()]
-#        return get_birthdays_per_week(users)
+    @error_handler
+    def print_birthdays_per_week(self):
+        weekdays_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+        start_date = datetime.strptime(input('Enter date to start from:'), "%d/%m/%Y").date()
+        people_to_congratulate = defaultdict(list)
+        for user in self.book.data:
+            birthday = datetime.strptime(self.book.data[user].birthday.value, "%d/%m/%Y").date()
+            new_birthday = birthday.replace(year=start_date.year)
+            delta_days = (new_birthday - start_date).days
+            if 7 >= delta_days >= 0:
+                weekday = new_birthday.isoweekday()
+                if weekday == 6 or weekday == 7:
+                    weekday = 1
+                people_to_congratulate[weekday].append(user)
+
+        for i in range(1, 6):
+            if people_to_congratulate.get(i) is not None:
+                names = ", ".join(people_to_congratulate[i])
+                print(f'{weekdays_list[i - 1]}: {names}')
+
+
+
+
+
 
     def idle(self) -> None:
         print("Welcome to the personal assistant bot!")

@@ -266,6 +266,7 @@ class Bot:
         return "Tags removed."
 
     @error_handler
+    @require_args(1)
     def show_note(self, args):
         """Show note from the notebook"""
         title = args[0]

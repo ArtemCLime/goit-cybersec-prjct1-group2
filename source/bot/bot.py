@@ -23,6 +23,10 @@ class Bot:
         self.book = AddressBook()
         self.notebook = NoteBook()
 
+        if not os.path.exists(folder):
+            print(f"Creating data folder at path {folder}")
+            os.makedirs(folder)
+
         self.address_book_path = f"{folder}/address_book.json"
         self.note_book_path = f"{folder}/notebook.json"
 

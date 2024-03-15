@@ -25,3 +25,7 @@ class Note:
         """Return a string representation of the note."""
         tags = [f"#{tag}" for tag in self.tags]
         return f"{self.note} | {tags}"
+
+    def __repr__(self):
+        """Return a string representation of the note."""
+        return self.__str__()

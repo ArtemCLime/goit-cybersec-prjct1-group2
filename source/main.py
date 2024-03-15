@@ -1,4 +1,5 @@
 from bot import Bot
+import os
 
 """
     Main application entry point.
@@ -12,5 +13,8 @@ except:
 
 if __name__ == "__main__":
     folder = "data"
+    if not os.path.exists(folder):
+        print(f"Creating data folder at path {folder}")
+        os.makedirs(folder)
     bot = Bot(folder)
     bot.idle()

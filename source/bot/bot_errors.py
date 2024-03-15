@@ -1,3 +1,7 @@
+"""
+Errors specification and decorator function
+"""
+
 class BotContactsNotAvailableException(Exception):
     pass
 

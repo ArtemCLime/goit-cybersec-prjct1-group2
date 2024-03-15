@@ -2,7 +2,7 @@ from bot import Bot
 
 """
     Main application entry point.
-
+    All suuported commands located in README.md or type help
 """
 
 try:

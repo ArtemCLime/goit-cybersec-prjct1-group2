@@ -23,7 +23,7 @@ class Birthday(Field):
         if not isinstance(value, str):
             return False
         try:
-            datetime.strptime(value, '%d/%m/%Y')
+            datetime.strptime(value, '%d.%m.%Y')
         except ValueError:
             return False        
         return True

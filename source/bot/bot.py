@@ -24,6 +24,7 @@ class Bot:
             "show-birthday": self.show_birthday,
             "save": self.book_save,
             "load": self.load_book,
+            "search": self.search_by_field,
             "help": self.show_help
         }
         #TODO: autoload the address book if exists
@@ -157,6 +158,16 @@ class Bot:
             return record.read("birthday")
         else:
             raise BotContactNotExistsException
+        
+    @error_handler
+    @require_args(2)
+    def search_by_field(self, args):
+        field_type, field_value = args        
+        record = self.book.search_by_field(field_type, field_value)
+        if record:            
+            return str(record)
+        else:
+            raise BotContactNotExistsException        
 
     @error_handler
     def book_save(self):

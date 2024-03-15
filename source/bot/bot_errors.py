@@ -2,55 +2,74 @@
 Errors specification and decorator function
 """
 
+
 class BotContactsNotAvailableException(Exception):
     pass
+
 
 class BotContactExistsException(Exception):
     pass
 
+
 class BotContactNotExistsException(Exception):
     pass
+
 
 class BotContactAddException(Exception):
     pass
 
+
 class BotContactChangeException(Exception):
     pass
+
 
 class BotContactPhoneException(Exception):
     pass
 
+
 class BotPhoneLenghtException(Exception):
     pass
+
 
 class BotRecordNotFoundException(Exception):
     pass
 
+
 class BotBirthdayWrongFormat(Exception):
     pass
+
 
 class BotBirthdayAddException(Exception):
     pass
 
+
 class BotBirthdayShowException(Exception):
     pass
+
 
 class BotRecordUnrecognizeFieldException(Exception):
     pass
 
+
 class BotRecordEmptyParamsException(Exception):
     pass
+
+
 class BotNoteNotExistsException(Exception):
     pass
+
 
 class BotContactSearchByNameException(Exception):
     pass
 
+
 class BotContactSearchByPhoneException(Exception):
     pass
 
+
 class BotContactSearchByEmailException(Exception):
     pass
+
 
 def error_handler(func):
     def inner(*args, **kwargs):
@@ -91,7 +110,10 @@ def error_handler(func):
         except BotContactSearchByPhoneException:
             return "  Error: Phone was not found!\n  Example: search Phone 0123456789"
         except BotContactSearchByEmailException:
-            return "  Error: Email was not found!\n  Example: search Email test@gmail.com"
+            return (
+                "  Error: Email was not found!\n  Example: search Email test@gmail.com"
+            )
         except Exception as e:
             return f"  Something happen! {e}"
+
     return inner

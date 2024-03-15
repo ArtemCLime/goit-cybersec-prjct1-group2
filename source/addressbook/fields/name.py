@@ -1,18 +1,20 @@
 from addressbook.fields.field import Field
 
+
 class Name(Field):
     """
-        Class for the name field in the address book.
-        Inherits from Field.
+    Class for the name field in the address book.
+    Inherits from Field.
 
-        Attributes:
-        value: The value of the name field.
+    Attributes:
+    value: The value of the name field.
 
-        Methods:
-        __eq__: Compare the value of the name field with another name field.
-        __str__: Return the string representation of the name field.
-    
-    """ 
+    Methods:
+    __eq__: Compare the value of the name field with another name field.
+    __str__: Return the string representation of the name field.
+
+    """
+
     def __init__(self, value, required=True):
         if not self.validate(value, required):
             raise ValueError(f"Invalid name format {value}.")
@@ -23,5 +25,5 @@ class Name(Field):
         if not isinstance(value, str):
             return False
         if required and not value:
-            return False        
+            return False
         return True

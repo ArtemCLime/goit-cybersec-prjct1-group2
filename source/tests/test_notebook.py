@@ -2,6 +2,7 @@
 from notebook.notebook import NoteBook
 from notebook.notes.note import Note
 
+
 def test_notebook():
     note_book = NoteBook()
     note_book.add("Note 1", "This is a note.")
@@ -20,22 +21,22 @@ def test_notebook():
     assert note_book.search_by_tags("not important") == []
     print("Notebook class test cases passed.")
 
+
 def test_notebook_from_json():
     note_book = NoteBook()
     data = {
-        "Note 1": {
-            "title": "Note 1",
-            "note": "This is a note.",
-            "tags": ["important"]
-        },
+        "Note 1": {"title": "Note 1", "note": "This is a note.", "tags": ["important"]},
         "Note 2": {
             "title": "Note 2",
             "note": "This is another note.",
-            "tags": ["urgent", "important"]
-        }
+            "tags": ["urgent", "important"],
+        },
     }
     note_book.from_json(data)
-    assert note_book.search_by_tags("important") == [Note("This is a note."), Note("This is another note.")]
+    assert note_book.search_by_tags("important") == [
+        Note("This is a note."),
+        Note("This is another note."),
+    ]
     assert note_book.search_by_tags("urgent") == [Note("This is another note.")]
     assert note_book.search_by_tags("not important") == []
     assert note_book.read("Note 1") == Note("This is a note.")
@@ -45,6 +46,7 @@ def test_notebook_from_json():
     assert note_book.search_by_tags("urgent") == [Note("This is another note.")]
     assert note_book.search_by_tags("not important") == []
     print("Notebook class from_json test cases passed.")
+
 
 if __name__ == "__main__":
     test_notebook()

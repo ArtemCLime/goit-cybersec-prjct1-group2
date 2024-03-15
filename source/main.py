@@ -11,6 +11,6 @@ except:
     print("can't load rich module")
 
 if __name__ == "__main__":
-    folder = 'data'
+    folder = "data"
     bot = Bot(folder)
     bot.idle()

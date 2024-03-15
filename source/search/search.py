@@ -1,5 +1,6 @@
 import difflib
 
+
 def search(query, data, top_n=3):
     """
     Search for a query in the data.

@@ -6,6 +6,14 @@ import os
     All suuported commands located in README.md or type help
 """
 
+def main():
+    folder = "data"
+    if not os.path.exists(folder):
+        print(f"Creating data folder at path {folder}")
+        os.makedirs(folder)
+    bot = Bot(folder)
+    bot.idle() 
+
 try:
     import rich
 except:

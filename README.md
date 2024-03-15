@@ -26,6 +26,14 @@ Each contact can have multiple email and phone records.
 * save - save address book to the local file
 * load - load address book from the local file
 * help - print this help
+* add-note [title] [note] - add new note
+* edit-note [title] - edit title
+* search-note -
+* delete-note [title] - delete note
+* add-note-tags [title] [tags] - add tags to the note
+* remove-note-tags [title] [tags] - remove tags from the note
+* show-note [title] - show note
+* search [field-type] [field-value] - search record by field type and its value
 
 ### field-type one of the next
 

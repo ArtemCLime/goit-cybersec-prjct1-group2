@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 from addressbook import AddressBook
 from notebook.notes import Note
 from search.search import search
@@ -41,9 +41,9 @@ class NoteBook(AddressBook):
         """Remove a tag from the note."""
         self.data[title].tags.remove(tag)
 
-    def search_by_tags(self, tag: str):
+    def search_by_tags(self, tags: List[str]):
         """Search for a tag in the note book."""
-        return [note for note in self.data.values() if tag in note.tags]
+        return [note for note in self.data.values() if any(tag in note.tags for tag in tags)]
 
     def search_by_text(self, query: str):
         """Search for a text query in the note book.

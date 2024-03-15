@@ -5,7 +5,7 @@ from bot import Bot
 class TestBot(unittest.TestCase):
 
     def setUp(self):
-        self.bot = Bot("data")
+        self.bot = Bot("test_data")
 
     def test_add_contact(self):
         result = self.bot.add_contact(["John", "1234567890"])
@@ -134,6 +134,19 @@ class TestBot(unittest.TestCase):
     def test_wrong_input(self):
         result = self.bot.wrong_input("addd")
         self.assertEqual(result, "Invalid command. Did you mean 'add'?")
+
+    def test_search_note(self):
+        with patch("builtins.input", return_value="This is a note."):
+            result = self.bot.add_note(["Note 1"])
+        result = self.bot.search_note(["note"])
+        self.assertEqual(result, ["This is a note."])
+
+    def test_search_note_tags(self):
+        with patch("builtins.input", return_value="This is a note."):
+            result = self.bot.add_note(["Note 1"])
+        result = self.bot.add_note_tags(["Note 1", "important"])
+        result = self.bot.search_note(["tags:", "important"])
+        self.assertEqual(result[0].note, "This is a note.")
 
 if __name__ == "__main__":
     unittest.main()

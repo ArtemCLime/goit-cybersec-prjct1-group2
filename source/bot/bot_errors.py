@@ -37,6 +37,15 @@ class BotRecordUnrecognizeFieldException(Exception):
 class BotRecordEmptyParamsException(Exception):
     pass
 
+class BotContactSearchByNameException(Exception):
+    pass
+
+class BotContactSearchByPhoneException(Exception):
+    pass
+
+class BotContactSearchByEmailException(Exception):
+    pass
+
 def error_handler(func):
     def inner(*args, **kwargs):
         try:
@@ -69,6 +78,12 @@ def error_handler(func):
             return "  Unrecognize field name"
         except BotRecordEmptyParamsException:
             return "  Empty parameters"
+        except BotContactSearchByNameException:
+            return "  Error: UserName was not found!\n  Example: search UserName 12345678890"
+        except BotContactSearchByPhoneException:
+            return "  Error: Phone was not found!\n  Example: search Phone 0123456789"
+        except BotContactSearchByEmailException:
+            return "  Error: Email was not found!\n  Example: search Email test@gmail.com"
         except Exception as e:
             return f"  Something happen! {e}"
     return inner

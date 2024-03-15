@@ -3,6 +3,7 @@ import json
 from collections import UserDict
 from typing import Union
 from search.search import search
+from bot.bot_errors import *
 
 
 class AddressBook(UserDict):
@@ -54,16 +55,43 @@ class AddressBook(UserDict):
             data = json.load(file)
             self.from_json(data)
 
+    def search_by_field(self, field_name: str, field_value: str):
+        if field_name == 'name':
+            return self.search_by_name(field_value)
+        elif field_name == 'phone':
+            return self.search_by_phone(field_value)
+        elif field_name == 'email':
+            return self.search_by_email(field_value)
+
     def search_by_name(self, name: str):
         """ Search for a name in the address book. """
-        return search(name, [record.name.value for record in self.data.values()], top_n=3)
+        try:
+            contact = self.data.get(name)
+            if contact != None:                
+                return contact
+            else:
+                raise BotRecordNotFoundException
+        except Exception:
+                raise BotContactSearchByNameException                        
     
     def search_by_phone(self, phone: str):
         """ Search for a phone in the address book. """
-        return search(phone, [phone.value for record in self.data.values() for phone in record.phones], top_n=3)
-    
+        try:
+            for key in self.data.keys():
+                for p in self.data[key].phones:
+                    if p.value == phone:
+                        return self.data[key]           
+                raise BotRecordNotFoundException
+        except Exception:
+                raise BotContactSearchByPhoneException                
+            
     def search_by_email(self, email: str):
         """ Search for an email in the address book. """
-        return search(email, [email.value for record in self.data.values() for email in record.emails], top_n=3)
-
-    
+        try:
+            for key in self.data.keys():
+                for e in self.data[key].emails:
+                    if e.value == email:
+                        return self.data[key]           
+                raise BotRecordNotFoundException
+        except Exception:
+                raise BotContactSearchByEmailException   

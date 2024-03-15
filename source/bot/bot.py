@@ -1,6 +1,11 @@
 from addressbook import AddressBook
 from addressbook.records import Record
 from bot.bot_errors import *
+from notebook import NoteBook
+from bot.utils import MARKDOWN
+import os
+from search.search import search
+
 
 from rich.console import Console
 from rich.markdown import Markdown
@@ -10,9 +15,12 @@ class Bot:
     The main class. All operation and infinity loop placed here.
     Read the README.md for information about supported commands.
     """
-    def __init__(self, book_file_path) -> None:
+    def __init__(self, folder: str) -> None:
         self.book = AddressBook()
-        self.book_file_path = book_file_path 
+        self.notebook = NoteBook()
+
+        self.address_book_path = f"{folder}/address_book.json"
+        self.note_book_path = f"{folder}/notebook.json"
 
         self.COMAND_MAPPING = {
             "add": self.add_contact,
@@ -20,14 +28,20 @@ class Bot:
             "change": self.update_contact,
             "phone": self.show_phone,
             "all": self.show_all_contacts,
-            #"add-birthday": self.add_birthday,
             "show-birthday": self.show_birthday,
             "save": self.book_save,
             "load": self.load_book,
-            "help": self.show_help
+            "help": self.show_help,
+            "add-note": self.add_note,
+            "edit-note": self.edit_note,
+            "search-note": self.search_note,
+            "delete-note": self.delete_note,
+            "add-note-tags": self.add_note_tags,
+            "remove-note-tags": self.remove_note_tags,
+            "show-note": self.show_note,
         }
-        #TODO: autoload the address book if exists
-        #self.__load_book()
+
+        self.__load_book()
 
     def require_args(n_args):
         """ Function for validation incomming parameters """
@@ -51,14 +65,18 @@ class Bot:
         Private function.
         Load address book from local storage
         """
-        self.book.load_from_file(self.book_file_path)
+        if os.path.exists(self.address_book_path):
+            self.book.load_from_file(self.address_book_path)
+        if os.path.exists(self.note_book_path):
+            self.notebook.load_from_file(self.note_book_path)
 
     def __save_book(self):
         """
         Private function
         Save address book to the local storage
         """
-        self.book.save_to_file(self.book_file_path)
+        self.book.save_to_file(self.address_book_path)
+        self.notebook.save_to_file(self.note_book_path)
 
     @error_handler
     @require_args(2)  
@@ -172,34 +190,84 @@ class Bot:
     
     def show_help(self):
         """ Show help information """
-        MARKDOWN = """
-# Manual for Bot Assistant
-
-Assistant bot help keep contact information in one place.  
-Each contact can have multiple email and phone records.
-
-## The next command are supported
-
-* add [name] [phone] - Create the new record in address book
-* add-field [name] [field-type] [value] - add field to the record
-* change [name] [field-type] [old_value] [new_value] - change field value
-* phone [name] - show all phones for given contact name
-* all - show all contacts in the Address Book
-* show-birthday [name] - show contact birtday
-* save - save address book to the local file
-* load - load address book from the local file
-* help - print this help
-
-### field-type one of the next
-
-* phone - the phone number. min 10 digit
-* email - the email
-* birthday - birthday date in format dd.mm.yyyy
-* address - the address
-"""
         console = Console()
         md = Markdown(MARKDOWN)
         console.print(md)
+
+    @error_handler
+    @require_args(1)
+    def add_note(self, args):
+        """ Add note to the notebook """
+        title = args[0]
+        note = input("Enter new note: ")
+        self.notebook.add(title, note)
+        return "Note added."
+    
+    @error_handler
+    @require_args(1)
+    def edit_note(self, args):
+        """ Edit note in the notebook """
+        title = args[0]
+        old_note = self.notebook.read(title)
+        if not old_note:
+            raise BotNoteNotExistsException
+        print(f"Old note: {old_note}")
+        new_note = input("Enter new note: ")
+        self.notebook.update(title, new_note)
+        return "Note updated."
+    
+    @error_handler
+    def search_note(self, args):
+        """ Search note in the notebook """
+        if args[0] == "tags:":
+            return self.notebook.search_by_tags(args[1:])
+        query = " ".join(args)
+        return self.notebook.search_by_text(query)
+    
+    @error_handler
+    @require_args(1)
+    def delete_note(self, args):
+        """ Delete note from the notebook """
+        title = args[0]
+        self.notebook.delete(title)
+        return "Note deleted."
+    
+    @error_handler
+    def add_note_tags(self, args):
+        """ Add tags to the note """
+        title = args[0]
+        tags = args[1:]
+        for tag in tags:
+            self.notebook.add_tag(title, tag)
+        return "Tags added."
+    
+    @error_handler
+    def remove_note_tags(self, args):
+        """ Remove tags from the note """
+        title = args[0]
+        tags = args[1:]
+        for tag in tags:
+            self.notebook.remove_tag(title, tag)
+        return "Tags removed."
+    
+    @error_handler
+    def show_note(self, args):
+        """ Show note from the notebook """
+        title = args[0]
+        note = self.notebook.read(title)
+        if note:
+            return note
+        else:
+            raise BotNoteNotExistsException
+        
+    def wrong_input(self, command):
+        """ Searches for closest match to the input """
+        match = search(command, self.COMAND_MAPPING.keys(), top_n=1)
+        if match:
+            return f"Invalid command. Did you mean '{match[0]}'?"
+
+
+
 
 #    @input_error
 #    def print_birthdays_per_week(self, book):
@@ -220,4 +288,4 @@ Each contact can have multiple email and phone records.
                 else:
                     print(self.COMAND_MAPPING[command]())
             else:
-                print("Invalid command.")
+                print(self.wrong_input(command))

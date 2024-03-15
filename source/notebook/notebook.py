@@ -1,6 +1,6 @@
 from typing import Union
 from addressbook import AddressBook
-from addressbook.records import Note
+from notebook.notes import Note
 from search.search import search
 
 class NoteBook(AddressBook):
@@ -21,7 +21,7 @@ class NoteBook(AddressBook):
 
     def read(self, title: str):
         """ Read a note from the address book. """
-        return self.data[title]
+        return self.data.get(title)
     
     def update(self, title: str, note: Note):
         """ Update a note in the address book. """

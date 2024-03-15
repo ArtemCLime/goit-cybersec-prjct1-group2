@@ -40,6 +40,8 @@ class BotRecordUnrecognizeFieldException(Exception):
 
 class BotRecordEmptyParamsException(Exception):
     pass
+class BotNoteNotExistsException(Exception):
+    pass
 
 def error_handler(func):
     def inner(*args, **kwargs):
@@ -73,6 +75,8 @@ def error_handler(func):
             return "  Unrecognize field name"
         except BotRecordEmptyParamsException:
             return "  Empty parameters"
+        except BotNoteNotExistsException:
+            return "  Note not found"
         except Exception as e:
             return f"  Something happen! {e}"
     return inner

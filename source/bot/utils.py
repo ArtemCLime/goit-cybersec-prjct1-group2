@@ -24,6 +24,7 @@ Each contact can have multiple email and phone records.
 * remove-note-tags [title] [tags] - remove tags from the note
 * show-note [title] - show note
 * search [field-type] [field-value] - search record by field type and its value
+* close | exit - close application and save all changes
 
 ### field-type one of the next
 

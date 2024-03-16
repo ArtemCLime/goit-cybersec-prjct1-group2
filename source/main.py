@@ -1,3 +1,4 @@
+import os
 from bot import Bot
 
 """

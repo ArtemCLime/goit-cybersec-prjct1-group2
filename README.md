@@ -10,6 +10,21 @@ Team project for GO IT CyberSecurity Masters [Project 1, Group 2]
 pip install -r requirements.txt
 ```
 
+## Install bot like local execution software
+
+* Go to the bot folder
+* Execute the next command for installing python package
+
+```bash
+> pip install -e .
+```
+
+* Execute application
+
+```bash
+> datadefendersbot
+```
+
 ## Manual for Bot Assistant
 
 Assistant bot help keep contact information in one place.  
@@ -28,7 +43,7 @@ Each contact can have multiple email and phone records.
 * help - print this help
 * add-note [title] [note] - add new note
 * edit-note [title] - edit title
-* search-note -
+* search-note [tags: | free_text]- search note by tags or by text
 * delete-note [title] - delete note
 * add-note-tags [title] [tags] - add tags to the note
 * remove-note-tags [title] [tags] - remove tags from the note

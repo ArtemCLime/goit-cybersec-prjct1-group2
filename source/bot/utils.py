@@ -18,12 +18,13 @@ Each contact can have multiple email and phone records.
 * help - print this help
 * add-note [title] [note] - add new note
 * edit-note [title] - edit title
-* search-note -
+* search-note [tags: | free_text]- search note by tags or by text
 * delete-note [title] - delete note
 * add-note-tags [title] [tags] - add tags to the note
 * remove-note-tags [title] [tags] - remove tags from the note
 * show-note [title] - show note
 * search [field-type] [field-value] - search record by field type and its value
+* close | exit - close application and save all changes
 
 ### field-type one of the next
 

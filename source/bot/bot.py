@@ -341,6 +341,7 @@ class Bot:
             user_input = input("Enter a command: ")
             command, *args = self.parse_input(user_input)
             if command in ["close", "exit"]:
+                self.__save_book()
                 print("Good bye!")
                 break
             elif command in self.COMAND_MAPPING:
